@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>{{ display_name }}</h1>
+    <p class="page-subtitle">{{ articles|length }} articles in this topic</p>
+</div>
+
+<div class="article-grid">
+    {% for article in articles %}
+    <article class="article-card">
+        <div class="article-meta">
+            <span class="article-source">{{ article.source_name }}</span>
+            <span class="article-date">{{ article.published_date[:10] if article.published_date else 'Recent' }}</span>
+        </div>
+        <h3 class="article-title">
+            <a href="{{ article.link }}" target="_blank" rel="noopener">{{ article.title }}</a>
+        </h3>
+        <p class="article-description">
+            {{ article.description[:200] }}{% if article.description|length > 200 %}...{% endif %}
+        </p>
+        <div class="article-footer">
+            <span class="article-type">{{ article.source_type }}</span>
+            <a href="{{ article.link }}" target="_blank" rel="noopener" class="read-more">Read →</a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+{% if not articles %}
+<div class="empty-state">
+    <p>No articles in this category yet. Content will appear as feeds are fetched.</p>
+</div>
+{% endif %}
+
+{% endblock %}

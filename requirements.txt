@@ -1,0 +1,15 @@
+# requirements.txt — Python Dependencies for AdTech Pulse
+# =========================================================
+# Install all of these with: pip install -r requirements.txt
+#
+# WHAT EACH PACKAGE DOES:
+# flask         = Web framework (turns Python into a website)
+# feedparser    = Parses RSS/podcast feeds (the content engine)
+# textblob      = Sentiment analysis (Phase 3 — install later if you want)
+
+flask
+feedparser
+
+# --- PHASE 3 ADDITIONS (uncomment when ready) ---
+# textblob      # Sentiment analysis
+# schedule      # Task scheduling (auto-fetch feeds)

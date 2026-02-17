@@ -1,0 +1,101 @@
+<!-- templates/index.html — Homepage -->
+<!-- ================================= -->
+<!-- This template EXTENDS base.html — it inherits the nav, sidebar, footer. -->
+<!-- It only needs to fill in the "content" block with homepage-specific stuff. -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <h1>Ad Tech Intelligence, <span class="highlight">Curated Daily</span></h1>
+    <p class="hero-subtitle">
+        {{ total_articles }} articles aggregated from the top advertising industry sources. 
+        Auto-updated every hour.
+    </p>
+</div>
+
+<!-- ======================= -->
+<!-- AD SLOT: Top of Content -->
+<!-- ======================= -->
+<div class="ad-slot content-ad">
+    <span class="ad-label">Ad Space</span>
+</div>
+
+<!-- Latest News Section -->
+<section class="content-section">
+    <h2 class="section-title">Latest News</h2>
+    
+    <div class="article-grid">
+        {% for article in news %}
+        <article class="article-card">
+            <div class="article-meta">
+                <span class="article-source">{{ article.source_name }}</span>
+                <span class="article-date">{{ article.published_date[:10] if article.published_date else 'Recent' }}</span>
+            </div>
+            <h3 class="article-title">
+                <a href="{{ article.link }}" target="_blank" rel="noopener">
+                    {{ article.title }}
+                </a>
+            </h3>
+            <p class="article-description">
+                {{ article.description[:200] }}{% if article.description|length > 200 %}...{% endif %}
+            </p>
+            <div class="article-footer">
+                <a href="{{ url_for('category', category_name=article.category) }}" class="article-category">
+                    {{ categories.get(article.category, {}).get('display_name', article.category) }}
+                </a>
+                <a href="{{ article.link }}" target="_blank" rel="noopener" class="read-more">
+                    Read →
+                </a>
+            </div>
+        </article>
+
+        <!-- Insert an ad after every 6th article -->
+        {% if loop.index == 6 %}
+        <div class="ad-slot inline-ad">
+            <span class="ad-label">Ad Space</span>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+
+    {% if not news %}
+    <div class="empty-state">
+        <p>No articles yet. <a href="{{ url_for('refresh_feeds') }}">Click here to fetch feeds</a>.</p>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Podcast Section -->
+{% if podcasts %}
+<section class="content-section">
+    <div class="section-header">
+        <h2 class="section-title">Latest Podcast Episodes</h2>
+        <a href="{{ url_for('podcasts') }}" class="see-all-link">See all →</a>
+    </div>
+
+    <div class="podcast-grid">
+        {% for episode in podcasts %}
+        <div class="podcast-card">
+            <div class="podcast-source">{{ episode.source_name }}</div>
+            <h3 class="podcast-title">
+                <a href="{{ episode.link }}" target="_blank" rel="noopener">
+                    {{ episode.title }}
+                </a>
+            </h3>
+            <p class="podcast-description">
+                {{ episode.description[:150] }}{% if episode.description|length > 150 %}...{% endif %}
+            </p>
+            {% if episode.audio_duration %}
+            <span class="podcast-duration">🎧 {{ episode.audio_duration }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

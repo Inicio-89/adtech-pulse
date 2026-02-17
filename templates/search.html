@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Search</h1>
+    <form action="{{ url_for('search') }}" method="GET" class="search-form-large">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search articles and podcasts..." class="search-input-large" autofocus>
+        <button type="submit" class="search-btn">Search</button>
+    </form>
+</div>
+
+{% if query %}
+<p class="search-results-count">{{ results|length }} results for "{{ query }}"</p>
+
+<div class="article-grid">
+    {% for article in results %}
+    <article class="article-card">
+        <div class="article-meta">
+            <span class="article-source">{{ article.source_name }}</span>
+            <span class="article-type">{{ article.source_type }}</span>
+            <span class="article-date">{{ article.published_date[:10] if article.published_date else 'Recent' }}</span>
+        </div>
+        <h3 class="article-title">
+            <a href="{{ article.link }}" target="_blank" rel="noopener">{{ article.title }}</a>
+        </h3>
+        <p class="article-description">
+            {{ article.description[:200] }}{% if article.description|length > 200 %}...{% endif %}
+        </p>
+        <div class="article-footer">
+            <a href="{{ url_for('category', category_name=article.category) }}" class="article-category">
+                {{ categories.get(article.category, {}).get('display_name', article.category) }}
+            </a>
+            <a href="{{ article.link }}" target="_blank" rel="noopener" class="read-more">Read →</a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+{% if not results %}
+<div class="empty-state">
+    <p>No results found for "{{ query }}". Try different keywords.</p>
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>About {{ app_name }}</h1>
+</div>
+
+<div class="about-content">
+    <p class="about-intro">
+        {{ app_name }} is an auto-curating advertising industry intelligence hub. 
+        It aggregates news and podcast content from the top ad tech sources, 
+        so you can stay current without checking a dozen sites.
+    </p>
+
+    <h2>How It Works</h2>
+    <p>
+        The site automatically pulls content from {{ source_counts|length }} industry sources 
+        every hour using RSS feeds. Articles are categorized by topic, and the database 
+        currently holds {{ total_articles }} pieces of content.
+    </p>
+
+    <h2>Sources</h2>
+    <div class="source-grid">
+        {% for source, count in source_counts.items() %}
+        <div class="source-card">
+            <span class="source-name">{{ source }}</span>
+            <span class="source-count">{{ count }} articles</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>Built With</h2>
+    <p>
+        Python, Flask, HTML/CSS, SQLite, and feedparser. 
+        No API costs. No paywalls. Just clean aggregation of public content.
+    </p>
+</div>
+
+{% endblock %}

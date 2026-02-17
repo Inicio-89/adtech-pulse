@@ -1,0 +1,175 @@
+<!-- templates/base.html — The Master Layout Template -->
+<!-- ================================================== -->
+<!-- This is the SHARED layout that all pages inherit from. -->
+<!-- It contains: the HTML structure, navigation bar, sidebar, footer, and ad slots. -->
+<!-- Other templates "extend" this one and fill in the content block. -->
+<!--  -->
+<!-- JINJA2 TEMPLATING: -->
+<!-- {{ variable }} = prints a Python variable -->
+<!-- {% block name %}{% endblock %} = a placeholder that child templates fill in -->
+<!-- {% for item in list %} = loops through a list -->
+<!-- {% if condition %} = conditional logic -->
+<!-- {{ url_for('function_name') }} = generates a URL for a Flask route -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ app_tagline }}">
+    <title>{% block title %}{{ page_title }} | {{ app_name }}{% endblock %}</title>
+    
+    <!-- Link to our CSS file -->
+    <!-- url_for('static', filename='...') generates the correct path to static files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Google Fonts — clean, professional typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ======================= -->
+    <!-- AD SLOT: Google AdSense -->
+    <!-- ======================= -->
+    <!-- When you're ready to add AdSense, paste your script tag here: -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXX" crossorigin="anonymous"></script> -->
+</head>
+<body>
+    <!-- ============== -->
+    <!-- NAVIGATION BAR -->
+    <!-- ============== -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo / Site Name -->
+                <a href="{{ url_for('index') }}" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">{{ app_name }}</span>
+                </a>
+
+                <!-- Navigation Links -->
+                <nav class="main-nav">
+                    <a href="{{ url_for('index') }}" class="nav-link {% if page_title == 'Home' %}active{% endif %}">Home</a>
+                    <a href="{{ url_for('podcasts') }}" class="nav-link {% if page_title == 'Podcasts' %}active{% endif %}">Podcasts</a>
+                    
+                    <!-- Category Dropdown -->
+                    <div class="nav-dropdown">
+                        <span class="nav-link dropdown-trigger">Topics ▾</span>
+                        <div class="dropdown-menu">
+                            {% for key, cat in categories.items() %}
+                            <a href="{{ url_for('category', category_name=key) }}" class="dropdown-item">
+                                {{ cat.display_name }}
+                                {% if category_counts.get(key) %}
+                                <span class="count-badge">{{ category_counts[key] }}</span>
+                                {% endif %}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <a href="{{ url_for('about') }}" class="nav-link {% if page_title == 'About' %}active{% endif %}">About</a>
+                </nav>
+
+                <!-- Search Bar -->
+                <form action="{{ url_for('search') }}" method="GET" class="search-form">
+                    <input type="text" name="q" placeholder="Search articles..." 
+                           value="{{ request.args.get('q', '') }}" class="search-input">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============ -->
+    <main class="site-main">
+        <div class="container">
+            <div class="content-layout">
+                
+                <!-- Primary Content Area -->
+                <div class="content-primary">
+                    {% block content %}
+                    <!-- Child templates fill this in -->
+                    {% endblock %}
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="content-sidebar">
+                    <!-- ======================= -->
+                    <!-- AD SLOT: Sidebar Banner -->
+                    <!-- ======================= -->
+                    <div class="ad-slot sidebar-ad">
+                        <span class="ad-label">Ad Space</span>
+                        <!-- Replace with AdSense unit when ready -->
+                    </div>
+
+                    <!-- Categories Widget -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">Topics</h3>
+                        <ul class="category-list">
+                            {% for key, cat in categories.items() %}
+                            <li>
+                                <a href="{{ url_for('category', category_name=key) }}">
+                                    {{ cat.display_name }}
+                                    {% if category_counts.get(key) %}
+                                    <span class="count-badge">{{ category_counts[key] }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Newsletter Signup (Phase 4) -->
+                    <div class="sidebar-widget newsletter-widget">
+                        <h3 class="widget-title">Weekly Digest</h3>
+                        <p>Get the top ad tech stories delivered every Friday.</p>
+                        <form class="newsletter-form" action="#" method="POST">
+                            <input type="email" placeholder="your@email.com" class="newsletter-input">
+                            <button type="submit" class="newsletter-btn">Subscribe</button>
+                        </form>
+                    </div>
+
+                    <!-- Latest Podcasts Widget -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">Latest Podcasts</h3>
+                        {% block sidebar_podcasts %}
+                        <p class="widget-empty">Loading podcasts...</p>
+                        {% endblock %}
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- ====== -->
+    <!-- FOOTER -->
+    <!-- ====== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="footer-logo">⚡ {{ app_name }}</span>
+                    <p>{{ app_tagline }}</p>
+                    <p class="footer-disclaimer">
+                        Content aggregated from public RSS feeds. All article content 
+                        belongs to its respective publishers. We link to original sources.
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <a href="{{ url_for('index') }}">Home</a>
+                    <a href="{{ url_for('podcasts') }}">Podcasts</a>
+                    <a href="{{ url_for('about') }}">About</a>
+                    <a href="{{ url_for('refresh') }}">Refresh Feeds</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with Python & Flask | &copy; 2026 {{ app_name }}</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

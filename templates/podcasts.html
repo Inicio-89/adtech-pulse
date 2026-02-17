@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Ad Tech Podcasts</h1>
+    <p class="page-subtitle">Latest episodes from the top advertising industry podcasts</p>
+</div>
+
+<div class="podcast-list">
+    {% for episode in episodes %}
+    <div class="podcast-card podcast-card-full">
+        <div class="podcast-header">
+            <span class="podcast-source">{{ episode.source_name }}</span>
+            <span class="article-date">{{ episode.published_date[:10] if episode.published_date else 'Recent' }}</span>
+        </div>
+        <h3 class="podcast-title">
+            <a href="{{ episode.link }}" target="_blank" rel="noopener">{{ episode.title }}</a>
+        </h3>
+        <p class="podcast-description">{{ episode.description[:300] }}{% if episode.description|length > 300 %}...{% endif %}</p>
+        <div class="podcast-footer">
+            {% if episode.audio_duration %}
+            <span class="podcast-duration">🎧 {{ episode.audio_duration }}</span>
+            {% endif %}
+            <a href="{{ episode.link }}" target="_blank" rel="noopener" class="read-more">Listen →</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not episodes %}
+<div class="empty-state">
+    <p>No podcast episodes yet. <a href="{{ url_for('refresh_feeds') }}">Fetch feeds</a> to load content.</p>
+</div>
+{% endif %}
+
+{% endblock %}

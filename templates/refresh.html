@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Feed Refresh Complete</h1>
+</div>
+
+<div class="refresh-results">
+    <div class="refresh-card">
+        <h3>News Feeds</h3>
+        <p>Sources checked: {{ result.news.sources_checked }}</p>
+        <p>Articles found: {{ result.news.total_fetched }}</p>
+        <p class="highlight-number">New articles saved: {{ result.news.new_saved }}</p>
+    </div>
+
+    <div class="refresh-card">
+        <h3>Podcast Feeds</h3>
+        <p>Sources checked: {{ result.podcasts.sources_checked }}</p>
+        <p>Episodes found: {{ result.podcasts.total_fetched }}</p>
+        <p class="highlight-number">New episodes saved: {{ result.podcasts.new_saved }}</p>
+    </div>
+
+    <div class="refresh-total">
+        <p>Total new content: <strong>{{ result.total_new }}</strong></p>
+    </div>
+</div>
+
+<a href="{{ url_for('index') }}" class="btn-primary">← Back to Home</a>
+
+{% endblock %}
