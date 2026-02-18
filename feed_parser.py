@@ -16,6 +16,8 @@
 
 import feedparser
 import re
+import socket
+socket.setdefaulttimeout(15)
 from datetime import datetime
 from database import save_article
 from config import ALL_FEEDS, NEWS_FEEDS, PODCAST_FEEDS, CATEGORIES
